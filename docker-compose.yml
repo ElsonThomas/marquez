@@ -9,6 +9,8 @@ services:
       - MARQUEZ_PORT=5000
       - MARQUEZ_ADMIN_PORT=5001
       - MARQUEZ_CONFIG=/usr/src/app/config.yml
+      - CAYLEY_HOST=graph
+      - CAYLEY_PORT=64210
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
       - POSTGRES_DB=marquez
@@ -18,11 +20,11 @@ services:
       - ./docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh
       - ./config.example.yml:/usr/src/app/config.yml
     depends_on:
-      - cayley
+      - graph
       - db
     entrypoint: ["./wait-for-it.sh", "db:5432", "--", "./entrypoint.sh"]
 
-  cayley:
+  graph:
     build: ./docker/cayley
     ports:
       - '64210:64210'
