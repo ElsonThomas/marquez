@@ -18,6 +18,17 @@ services:
       - ./docker/wait-for-it.sh:/usr/src/app/wait-for-it.sh
       - ./config.example.yml:/usr/src/app/config.yml
     depends_on:
+      - cayley
+      - db
+    entrypoint: ["./wait-for-it.sh", "db:5432", "--", "./entrypoint.sh"]
+
+  cayley:
+    build: ./docker/cayley
+    ports:
+      - '64210:64210'
+    volumes:
+      - ./docker/wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+    depends_on:
       - db
     entrypoint: ["./wait-for-it.sh", "db:5432", "--", "./entrypoint.sh"]
 
@@ -31,5 +42,6 @@ services:
       - MARQUEZ_DB=marquez
       - MARQUEZ_USER=buendia
       - MARQUEZ_PASSWORD=macondo
+      - CAYLEY_DB=cayley
     volumes:
       - ./docker/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh

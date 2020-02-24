@@ -12,15 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Usage: $ ./init-db.sh
+# Usage: $ ./entrypoint.sh
 
-set -eu
+set -e
 
-psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" > /dev/null <<-EOSQL
-  CREATE USER ${MARQUEZ_USER};
-  ALTER USER ${MARQUEZ_USER} WITH PASSWORD '${MARQUEZ_PASSWORD}';
-  CREATE DATABASE ${MARQUEZ_DB};
-  GRANT ALL PRIVILEGES ON DATABASE ${MARQUEZ_DB} TO ${MARQUEZ_USER};
-  CREATE DATABASE ${CAYLEY_DB};
-  GRANT ALL PRIVILEGES ON DATABASE ${CAYLEY_DB} TO ${MARQUEZ_USER};
-EOSQL
+# Start http server with configuration
+cayley http --host=:64210
